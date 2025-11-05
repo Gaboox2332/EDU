@@ -1,0 +1,21 @@
+{
+  "name": "Mi Red Social",
+  "short_name": "MiPWA",
+  "description": "Una app web progresiva de ejemplo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "icons": [
+    {
+      "src": "images/icon1.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon2.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}

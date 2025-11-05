@@ -1,79 +1,273 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRUEBA</title>
-    <style>
-        .container {
-            display: grid;
-            width: 100%;
-            background-color: aqua;
-            grid-template-columns:1fr 1fr;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Red Social Básica</title>
 
-        .mitad1 {
-            font-size: 25px;
-        }
+  <!-- Manifest para PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <link rel="icon" href="images/icon1.png" type="image/png">
 
-    </style>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      color: #1c1e21;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #4267B2;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .post-form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 100px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0b5ed7;
+    }
+
+    .feed {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .post {
+      padding: 16px;
+      border-bottom: 1px solid #dddfe2;
+    }
+
+    .post:last-child {
+      border-bottom: none;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4267B2;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .user-name {
+      font-weight: 600;
+    }
+
+    .post-time {
+      color: #65676b;
+      font-size: 12px;
+      margin-left: auto;
+    }
+
+    .post-content {
+      margin-bottom: 10px;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .action {
+      color: #65676b;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .action:hover {
+      color: #4267B2;
+    }
+
+    .empty-feed {
+      text-align: center;
+      padding: 40px 20px;
+      color: #65676b;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <div class="mitad1">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque cupiditate fugiat dicta alias qui cumque aut, saepe cum quo dolore! Facilis sed rerum sapiente quisquam suscipit laboriosam inventore enim? Repudiandae.</p>
-        </div>
-        <div class="mitad2">
-            <img id="imagen" src="gatito.jpg" alt="">
-            <button id="boton">Cambiar Imagen</button>
 
-             <button id="btnapi">Cambiar Imagen Api</button>
-            <h1>Hola mundo</h1>
-        </div>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mi Red Social</h1>
+      <button id="instalarBtn" style="display:none;">Instalar App</button>
+    </header>
+
+    <div class="post-form">
+      <textarea id="postText" placeholder="¿Qué estás pensando?"></textarea>
+      <button id="postButton">Publicar</button>
     </div>
 
+    <div class="feed" id="feed">
+      <div class="empty-feed">
+        <p>Aún no hay publicaciones. ¡Sé el primero en publicar algo!</p>
+      </div>
+    </div>
+  </div>
 
-<script>
-    const btn=document.querySelector("button");
-    const btnapi=document.querySelector("#btnapi")
-    
-    btn.addEventListener("click",function(){
-        const img=document.querySelector("#imagen");
+  <script src="app.js"></script>
 
-        console.log(img.src);
-        if (img.src.endsWith('descarga.jpg')){
-            img.src = 'gatito.jpg'
-        }else{
-            img.src='descarga.jpg'
-        }
-    })
+  <script>
+    const users = [
+      { id: 1, name: "Ana García", initial: "A" },
+      { id: 2, name: "Carlos López", initial: "C" },
+      { id: 3, name: "María Rodríguez", initial: "M" },
+      { id: 4, name: "Usuario Actual", initial: "U" }
+    ];
 
-    btnapi.addEventListener("click",function(){
-        const endpoint="https://dog.ceo/api/breeds/image/random";
+    let posts = [];
+    const postText = document.getElementById('postText');
+    const postButton = document.getElementById('postButton');
+    const feed = document.getElementById('feed');
 
+    function formatDate(date) {
+      const now = new Date();
+      const diff = now - date;
+      if (diff < 60000) return "Ahora mismo";
+      if (diff < 3600000) return `Hace ${Math.floor(diff / 60000)} min`;
+      if (date.toDateString() === now.toDateString())
+        return `Hoy a las ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    }
 
-        fetch('https://dog.ceo/api/breeds/image/random')
-        .then (response=>{
-            if(!response.ok){
-                throw new Error("Error en la red");
-            }
-            return response.json()
-        })
-        .then(data => {
-            console.log(data); 
+    function createPost(content, userId = 4) {
+      const post = { id: Date.now(), userId, content, timestamp: new Date(), likes: 0, comments: [] };
+      posts.unshift(post);
+      renderPosts();
+    }
 
+    function renderPosts() {
+      feed.innerHTML = '';
+      if (posts.length === 0) {
+        feed.innerHTML = '<div class="empty-feed"><p>Aún no hay publicaciones. ¡Sé el primero en publicar algo!</p></div>';
+        return;
+      }
+      posts.forEach(post => {
+        const user = users.find(u => u.id === post.userId);
+        const postEl = document.createElement('div');
+        postEl.className = 'post';
+        postEl.innerHTML = `
+          <div class="post-header">
+            <div class="avatar">${user.initial}</div>
+            <div class="user-name">${user.name}</div>
+            <div class="post-time">${formatDate(post.timestamp)}</div>
+          </div>
+          <div class="post-content">${post.content}</div>
+          <div class="post-actions">
+            <div class="action" onclick="likePost(${post.id})">👍 Me gusta (${post.likes})</div>
+            <div class="action" onclick="commentOnPost(${post.id})">💬 Comentar</div>
+          </div>`;
+        feed.appendChild(postEl);
+      });
+    }
 
-            const img=document.querySelector("#imagen")
-            img.src=data.message
-        })
-        .catch(error => {
-            console.error('Hubo un problema con la petición fetch:', error);
-        });
+    function likePost(id) {
+      const post = posts.find(p => p.id === id);
+      if (post) { post.likes++; renderPosts(); }
+    }
 
-    })
+    function commentOnPost(id) {
+      const comment = prompt("Escribe tu comentario:");
+      if (comment && comment.trim() !== '') {
+        const post = posts.find(p => p.id === id);
+        if (post) post.comments.push({ userId: 4, content: comment, timestamp: new Date() });
+        alert("Comentario agregado!");
+      }
+    }
 
+    postButton.addEventListener('click', () => {
+      const content = postText.value.trim();
+      if (content) { createPost(content); postText.value = ''; }
+      else alert("Por favor, escribe algo para publicar.");
+    });
 
-</script>
+    postText.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        postButton.click();
+      }
+    });
 
+    window.addEventListener('DOMContentLoaded', () => {
+      createPost("¡Hola a todos! Bienvenidos a mi red social básica.", 1);
+      createPost("Hoy es un gran día para conectar con amigos.", 2);
+      createPost("Acabo de terminar este proyecto de red social. ¡Qué emoción!", 3);
+    });
+  </script>
 </body>
 </html>
